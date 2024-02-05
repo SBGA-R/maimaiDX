@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 import math
-from peewee import MySQLDatabase, Model, IntegerField, FloatField
+from peewee import MySQLDatabase, Model, IntegerField, FloatField, CharField
 
 
 @dataclass
@@ -72,6 +72,8 @@ class Mai2StaticMusic(Model):
     songId = IntegerField()
     chartId = IntegerField()
 
+    addedVersion = CharField()
+
     class Meta:
         database = MYSQL_DB
         table_name = 'mai2_static_music'
@@ -84,7 +86,15 @@ def get_difficulty_by_music_id_level(_music_id: int, _level: int) -> float:
     ).get().difficulty
 
 
+def is_current_version_by_music_id(_music_id: int) -> bool:
+    return Mai2StaticMusic.select().where(
+        Mai2StaticMusic.songId == _music_id
+    ).get().addedVersion == 'FESTiVALPLUS'
+
+
 if __name__ == '__main__':
     for m2sb in Mai2ScoreBest.select().where(Mai2ScoreBest.user == 10000):
         difficulty = get_difficulty_by_music_id_level(m2sb.musicId, m2sb.level)
         rating = calculate_rating_by_achievement_difficulty(m2sb.achievement, difficulty)
+
+        print(is_current_version_by_music_id(m2sb.musicId))
