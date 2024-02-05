@@ -121,7 +121,8 @@ class DrawBest:
                 fs = Image.open(maimaidir / f'UI_MSS_MBase_Icon_{fsl[info.fs]}.png').resize((45, 45))
                 self._im.alpha_composite(fs, (x + 315, y + 98))
             
-            dxscore = sum(mai.total_list.by_id(str(info.song_id)).charts[info.level_index].notes) * 3
+            # dxscore = sum(mai.total_list.by_id(str(info.song_id)).charts[info.level_index].notes) * 3
+            dxscore = 1  # TODO
             diff_sum_dx = info.dxScore / dxscore * 100
             dxtype, dxnum = dxScore(diff_sum_dx)
             for _ in range(dxnum):
