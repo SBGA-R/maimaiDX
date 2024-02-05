@@ -7,11 +7,12 @@ import aiohttp
 from PIL import Image, ImageDraw
 from pydantic import BaseModel
 
-from .. import *
 from .image import DrawText, image_to_base64
 from .maimaidx_api_data import maiApi
 from .maimaidx_error import *
 from .maimaidx_music import download_music_pictrue, mai
+from .. import *
+from ..data import notes_by_musicId_level
 
 
 class ChartInfo(BaseModel):
@@ -120,9 +121,8 @@ class DrawBest:
             if info.fs:
                 fs = Image.open(maimaidir / f'UI_MSS_MBase_Icon_{fsl[info.fs]}.png').resize((45, 45))
                 self._im.alpha_composite(fs, (x + 315, y + 98))
-            
-            # dxscore = sum(mai.total_list.by_id(str(info.song_id)).charts[info.level_index].notes) * 3
-            dxscore = 1  # TODO
+
+            dxscore = sum(notes_by_musicId_level(info.song_id, info.level_index)) * 3
             diff_sum_dx = info.dxScore / dxscore * 100
             dxtype, dxnum = dxScore(diff_sum_dx)
             for _ in range(dxnum):

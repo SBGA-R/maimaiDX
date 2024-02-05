@@ -1,76 +1,12 @@
 import asyncio
 from operator import attrgetter
 
-from peewee import MySQLDatabase, Model, IntegerField, FloatField, CharField
-
 from . import *
+from .data import Mai2ProfileDetail, Mai2ScoreBest, get_sm_by_music_id_level, is_current_version_by_music_id
 from .libraries.maimai_best_50 import ChartInfo, computeRa, UserInfo, Data, DrawBest
 
-MYSQL_DB = MySQLDatabase('aime', user='root',
-                         unix_socket="/var/lib/mysql/mysql.sock")
-
-MYSQL_DB.connect()
-
-
-class Mai2ScoreBest(Model):
-    achievement = IntegerField()
-
-    musicId = IntegerField()
-    level = IntegerField()
-
-    user = IntegerField()
-
-    deluxscoreMax = IntegerField()
-    comboStatus = IntegerField()
-    syncStatus = IntegerField()
-
-    class Meta:
-        database = MYSQL_DB
-        table_name = 'mai2_score_best'
-
-
-class Mai2StaticMusic(Model):
-    difficulty = FloatField()
-
-    songId = IntegerField()
-    chartId = IntegerField()
-
-    addedVersion = CharField()
-    title = CharField()
-
-    class Meta:
-        database = MYSQL_DB
-        table_name = 'mai2_static_music'
-
-
-def get_sm_by_music_id_level(_music_id: int, _level: int) -> Mai2StaticMusic:
-    return Mai2StaticMusic.select().where(
-        Mai2StaticMusic.songId == _music_id,
-        Mai2StaticMusic.chartId == _level
-    )
-
-
-def is_current_version_by_music_id(_music_id: int) -> bool:
-    return Mai2StaticMusic.select().where(
-        Mai2StaticMusic.songId == _music_id
-    ).get().addedVersion == 'FESTiVALPLUS'
-
-
-class Mai2ProfileDetail(Model):
-    user = IntegerField()
-
-    courseRank = IntegerField()
-
-    userName = CharField()
-    playerRating = IntegerField()
-
-    class Meta:
-        database = MYSQL_DB
-        table_name = 'mai2_profile_detail'
-
-
 if __name__ == '__main__':
-    user = 10000
+    user = 10001
     pd = Mai2ProfileDetail.select().where(Mai2ProfileDetail.user == user).get()
 
     nickname = pd.userName
