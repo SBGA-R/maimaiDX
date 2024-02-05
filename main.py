@@ -1,5 +1,7 @@
-import math
 from dataclasses import dataclass
+
+import math
+from peewee import MySQLDatabase, Model, IntegerField, FloatField
 
 
 @dataclass
@@ -37,7 +39,7 @@ RECORDS: list[RatingTable] = [
 ]
 
 
-def rating(_achievement: int, _difficulty: float):
+def calculate_rating_by_achievement_difficulty(_achievement: int, _difficulty: float) -> int:
     assert 0 <= _achievement <= 101_0000
     assert 0 <= _difficulty <= 15
 
@@ -45,5 +47,44 @@ def rating(_achievement: int, _difficulty: float):
     return math.floor(_difficulty * _rt.achieve * _rt.offset / 1_0000 / 100 / 10)
 
 
+MYSQL_DB = MySQLDatabase('aime', user='root',
+                         unix_socket="/var/lib/mysql/mysql.sock")
+
+MYSQL_DB.connect()
+
+
+class Mai2ScoreBest(Model):
+    achievement = IntegerField()
+
+    musicId = IntegerField()
+    level = IntegerField()
+
+    user = IntegerField()
+
+    class Meta:
+        database = MYSQL_DB
+        table_name = 'mai2_score_best'
+
+
+class Mai2StaticMusic(Model):
+    difficulty = FloatField()
+
+    songId = IntegerField()
+    chartId = IntegerField()
+
+    class Meta:
+        database = MYSQL_DB
+        table_name = 'mai2_static_music'
+
+
+def get_difficulty_by_music_id_level(_music_id: int, _level: int) -> float:
+    return Mai2StaticMusic.select().where(
+        Mai2StaticMusic.songId == _music_id,
+        Mai2StaticMusic.chartId == _level
+    ).get().difficulty
+
+
 if __name__ == '__main__':
-    print(rating(101_0000, 15))
+    for m2sb in Mai2ScoreBest.select().where(Mai2ScoreBest.user == 10000):
+        difficulty = get_difficulty_by_music_id_level(m2sb.musicId, m2sb.level)
+        rating = calculate_rating_by_achievement_difficulty(m2sb.achievement, difficulty)
