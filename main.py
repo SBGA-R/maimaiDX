@@ -2,7 +2,8 @@ import asyncio
 from operator import attrgetter
 
 from . import *
-from .data import Mai2ProfileDetail, Mai2ScoreBest, get_sm_by_music_id_level, is_current_version_by_music_id
+from .data import Mai2ProfileDetail, Mai2ScoreBest, get_sm_by_music_id_level, is_current_version_by_music_id, \
+    is_sd_by_musicId_level
 from .libraries.maimai_best_50 import ChartInfo, computeRa, UserInfo, Data, DrawBest
 
 if __name__ == '__main__':
@@ -35,7 +36,7 @@ if __name__ == '__main__':
 
             song_id=m2sb.musicId,
             title=sm.title,
-            type='DX' if is_current_version_by_music_id(m2sb.musicId) else 'SD'
+            type='SD' if is_sd_by_musicId_level(m2sb.musicId, m2sb.level) else 'DX'
         )
 
         if is_current_version_by_music_id(m2sb.musicId):

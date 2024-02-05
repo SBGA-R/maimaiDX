@@ -115,3 +115,7 @@ def notes_by_musicId_level(_musicId: int, _level: int) -> list[int]:
         p.touchCriticalPerfect + p.touchPerfect + p.touchGreat + p.touchGood + p.touchMiss,
         p.breakCriticalPerfect + p.breakPerfect + p.breakGreat + p.breakGood + p.breakMiss
     ]
+
+
+def is_sd_by_musicId_level(_musicId: int, _level: int) -> bool:
+    return notes_by_musicId_level(_musicId, _level)[3] == 0
