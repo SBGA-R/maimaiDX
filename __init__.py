@@ -1,8 +1,8 @@
-import json
+import logging
 from pathlib import Path
 
-from hoshino.config import NICKNAME
-from hoshino.log import new_logger
+NICKNAME = 'SBGA'
+new_logger = logging.getLogger
 
 ### 必须
 log = new_logger('maimaiDX')

@@ -4,7 +4,6 @@ import traceback
 from typing import List, Optional, Tuple, Union
 
 import aiohttp
-from hoshino.typing import MessageSegment
 from PIL import Image, ImageDraw
 from pydantic import BaseModel
 

@@ -1,7 +1,9 @@
+import math
 from dataclasses import dataclass
 
-import math
 from peewee import MySQLDatabase, Model, IntegerField, FloatField, CharField
+
+from .libraries.maimai_best_50 import generate
 
 
 @dataclass
@@ -93,6 +95,9 @@ def is_current_version_by_music_id(_music_id: int) -> bool:
 
 
 if __name__ == '__main__':
+    generate()
+    exit()
+
     for m2sb in Mai2ScoreBest.select().where(Mai2ScoreBest.user == 10000):
         difficulty = get_difficulty_by_music_id_level(m2sb.musicId, m2sb.level)
         rating = calculate_rating_by_achievement_difficulty(m2sb.achievement, difficulty)
