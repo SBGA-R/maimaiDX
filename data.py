@@ -47,7 +47,7 @@ def get_sm_by_music_id_level(_music_id: int, _level: int) -> Mai2StaticMusic:
 def is_current_version_by_music_id(_music_id: int) -> bool:
     return Mai2StaticMusic.select().where(
         Mai2StaticMusic.songId == _music_id
-    ).get().addedVersion == 'FESTiVALPLUS'
+    ).get().addedVersion == 'BUDDiES'
 
 
 class Mai2ProfileDetail(Model):

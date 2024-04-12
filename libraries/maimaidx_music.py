@@ -1,20 +1,18 @@
 import asyncio
-import json
 import random
 import traceback
 from collections import namedtuple
 from copy import deepcopy
 from io import BytesIO
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, Tuple, Union
 
 import aiofiles
-import aiohttp
 from PIL import Image
 from pydantic import BaseModel, Field
 
-from .. import *
 from .image import image_to_base64
 from .maimaidx_api_data import *
+from .. import *
 
 
 class Stats(BaseModel):
@@ -240,21 +238,7 @@ class AliasList(List[Alias]):
 
 
 async def download_music_pictrue(id: Union[int, str]) -> Union[str, BytesIO]:
-    try:
-        if (file := coverdir / f'{id}.png').exists():
-            return file
-        id = int(id)
-        if id > 10000 and id <= 11000:
-            id -= 10000
-        if (file := coverdir / f'{id}.png').exists():
-            return file
-        async with aiohttp.request('GET', f'https://www.diving-fish.com/covers/{id:05d}.png', timeout=aiohttp.ClientTimeout(total=60)) as req:
-            if req.status == 200:
-                return BytesIO(await req.read())
-            else:
-                return coverdir / '11000.png'
-    except:
-        return coverdir / '11000.png'
+    return coverdir / f'{id % 10000}.png'
 
 
 async def openfile(file: str) -> Union[dict, list]:

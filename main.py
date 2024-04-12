@@ -8,7 +8,8 @@ from .libraries.maimai_best_50 import ChartInfo, computeRa, UserInfo, Data, Draw
 
 if __name__ == '__main__':
     user = 10001
-    pd = Mai2ProfileDetail.select().where(Mai2ProfileDetail.user == user).get()
+    pd = Mai2ProfileDetail.select().where(Mai2ProfileDetail.user == user)
+    pd = list(pd)[-1]
 
     nickname = pd.userName
     rating = pd.playerRating
@@ -16,7 +17,9 @@ if __name__ == '__main__':
     sd: list[ChartInfo] = []
     dx: list[ChartInfo] = []
 
-    for m2sb in Mai2ScoreBest.select().where(Mai2ScoreBest.user == user):
+    for m2sb in Mai2ScoreBest.select().where(  # Utage
+            Mai2ScoreBest.user == user, Mai2ScoreBest.level != 10):
+
         sm = get_sm_by_music_id_level(m2sb.musicId, m2sb.level).get()
         ra, rate = computeRa(sm.difficulty, m2sb.achievement / 1_0000, True)
 
